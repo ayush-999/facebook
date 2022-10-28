@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+@import url(root.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #E8EAEE;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.7);
+  transition: all 0.2s ease-in-out;
+}
+
+a {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+a:hover {
+  color: #000;
+}
+
+:focus-visible {
+  outline: none;
+}
+
+/************************************************************************ 
+* Custom Styling
+*************************************************************************/
+.custom-padding {
+  padding: 0.5rem 1rem 0.5rem 0.5rem !important;
+  background-position: right 0.5rem center;
+}
+
+.btn-1 {
+  padding: 8px 24px;
+  color: #fff;
+  background: #3e5a98;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.btn-1:hover {
+  color: #fff;
+  background: #32497A;
+}
+
+select option {
+  background: #fff;
+  border-radius: 0px;
+}
+
+/************************************************************************ 
+* Home Header
+*************************************************************************/
+#header {
+  background-color: #3e5a98;
+  padding: 20px 0;
+}
+
+.home-title {
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.forget-class a {
+  color: #fff;
+  font-size: 12px;
+}
+
+.home-card-title {
+  font-size: 35px;
+  margin-bottom: 15px;
+}
+
+.home-card-sub-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.birthday-label,
+.gender-label {
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.home-loginBtn {
+  padding: 7.2px 23px;
+}
