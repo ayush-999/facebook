@@ -1,25 +1,59 @@
 <?php
 
-require 'core/database/connection.php';
+require 'connect/DB.php';
+require 'core/load.php';
 
 if (isset($_POST['first-name']) && !empty($_POST['first-name'])) {
   $upFirst = $_POST['first-name'];
   $upLast = $_POST['last-name'];
+  // $upScreenName = $_POST['screenName'];
   $upEmailMobile = $_POST['email-mobile'];
   $upPassword = $_POST['up-password'];
   $birthDay = $_POST['birth-day'];
   $birthMonth = $_POST['birth-month'];
   $birthYear = $_POST['birth-year'];
   if (!empty($_POST['gen'])) {
-    $upGen = $_POST['gen'];
+    $upgen = $_POST['gen'];
   }
   $birth = '' . $birthYear . '-' . $birthMonth . '-' . $birthDay . '';
 
-  if (empty($upFirst) or empty($upLast) or empty($upEmailMobile) or empty($upGen)) {
+  if (empty($upFirst) or empty($upLast) or empty($upEmailMobile) or empty($upPassword) or empty($birth) or empty($upgen)) {
     $error = 'All felids are required';
+  } else {
+    $first_name = $loadFromUser->checkInput($upFirst);
+    $last_name = $loadFromUser->checkInput($upLast);
+    $email_mobile = $loadFromUser->checkInput($upEmailMobile);
+    $password = $loadFromUser->checkInput($upPassword);
+    // check User in Database
+    // $screenName = $loadFromUser->checkInput($upScreenName);
+    $screenName = '' . $first_name . '_' . $last_name . '';
+    if (DB::query('SELECT screenName FROM users WHERE screenName = :screenName', array(':screenName' => $screenName))) {
+      $screenRand = rand();
+      $userLink = '' . $screenName . '' . $screenRand . '';
+    } else {
+      $userLink = $screenName;
+    }
+
+    if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^", $email_mobile)) {
+      if (!preg_match("^[0-9]{10}^", $email_mobile)) {
+        $error = 'Email or mobile number is not correct. Please try again.';
+      }
+    } else {
+      if (!filter_var($email_mobile)) {
+        $error = "Invalid Email Format";
+      } else if (strlen($first_name) > 20) {
+        $error = "Name must be between 2-20 character";
+      } else if (strlen($password) < 5 && strlen($password) >= 60) {
+        $error = "The password is either too short or too long.";
+      } else {
+        if ((filter_var($email_mobile, FILTER_VALIDATE_EMAIL)) && $loadFromUser->checkEmail($email_mobile) === true) {
+          $error = "Email is already is use";
+        } else {
+          $loadFromUser->create('users', array('first_name' => $first_name, 'last_name' => $last_name, 'email' => $email_mobile, 'password' => password_hash($password, PASSWORD_BCRYPT), 'screenName' => $screenName, 'userLink' => $userLink, 'birthday' => $birth, 'gender' => $upgen));
+        }
+      }
+    }
   }
-} else {
-  echo 'User not found';
 }
 
 ?>
@@ -91,6 +125,9 @@ if (isset($_POST['first-name']) && !empty($_POST['first-name'])) {
                 <div class="col-lg-6 col-sm-12 mb-3">
                   <input type="text" class="form-control shadow-none rounded-0" name="last-name" id="last-name" placeholder="Last Name">
                 </div>
+                <!-- <div class="col-lg-12 col-sm-12 mb-3">
+                  <input type="text" class="form-control shadow-none rounded-0" name="screenName" id="screenName" placeholder="Enter username">
+                </div> -->
                 <div class="col-lg-12 mb-3">
                   <input type="text" class="form-control shadow-none rounded-0" name="email-mobile" id="up-email" placeholder="Mobile number or email address">
                 </div>
@@ -122,10 +159,6 @@ if (isset($_POST['first-name']) && !empty($_POST['first-name'])) {
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="gen" id="female" value="female">
                         <label class="form-check-label" for="female">Female</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="gen" id="other" value="other">
-                        <label class="form-check-label" for="other">Other</label>
                       </div>
                     </div>
                   </div>
